@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Create your Schedule</title>
+	<!-- <link rel="stylesheet" href="style.css" />-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style2.css')}}">
+	<style>
+		.button-container {
+			position: relative;
+			bottom: 23px;
+			right: 300px;
+			width: 280px;
+		}
+
+		.button-container > * {
+			position: absolute;
+		}
+
+		.button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			/* position: fixed;
+			bottom: 23px;
+			right: 150px;
+			width: 280px;  */
+		}
+
+		.open-button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			/* position: fixed;
+			bottom: 23px;
+			right: 150px;
+			width: 280px;  */
+		}
+
+		.delete-button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			/* position: fixed;
+			bottom: 23px;
+			right: 28px;
+			width: 280px; */
+		}
+
+		.update-button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			/* position: fixed;
+			bottom: 23px;
+			right: 100px;
+			width: 280px; */
+		}
+
+		.search-button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			/* position: fixed;
+			bottom: 23px;
+			right: 100px;
+			width: 280px; */
+		}
+
+		/* The popup form - hidden by default */
+		.form-popup {
+			display: none;
+			position: fixed;
+			bottom: 0;
+			right: 15px;
+			border: 3px solid #f1f1f1;
+			z-index: 9;
+		}
+
+		/* Add styles to the form container */
+		.form-container {
+			max-width: 300px;
+			padding: 10px;
+			background-color: white;
+		}
+
+		/* Full-width input fields */
+		.form-container input[type=text], .form-container input[type=password] {
+			width: 100%;
+			padding: 15px;
+			margin: 5px 0 22px 0;
+			border: none;
+			background: #f1f1f1;
+		}
+
+		/* When the inputs get focus, do something */
+		.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+			background-color: #ddd;
+			outline: none;
+		}
+
+		/* Set a style for the submit/login button */
+		.form-container .btn {
+			background-color: #4CAF50;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom:10px;
+			opacity: 0.8;
+		}
+
+		/* Add a red background color to the cancel button */
+		.form-container .cancel {
+			background-color: red;
+		}
+
+		/* Add some hover effects to buttons */
+		.form-container .btn:hover, .open-button:hover {
+			opacity: 1;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- <p><a href="{{ url_for('.search')}}"> Search for Courses</a></p> -->
+	<div id="button-container">
+		<!--Search-->
+		<a href="{{ url_for('.schedules')}}"><button class="search-button" type="button">See Other Schedules</button></a>
+		<!--Insert-->
+		<button class="open-button" onclick="openForm()">Insert New Class</button>
+
+		<div class="form-popup" id="myForm" name="insertForm" style="overflow-y:scroll; max-height:95%">
+			<form id="insert_form_data" action="/planner" method="POST" class="form-container">
+				<h1>Insert Class</h1>
+
+				<label for="department"><b>Department</b></label>
+				<input type="text" placeholder="Department:" name="department" required>
+
+				<label for="number"><b>Course Number</b></label>
+				<input type="text" placeholder="Course Number:" name="number" required>
+
+				<label for="name"><b>Name</b></label>
+				<input type="text" placeholder="Name of Course:" name="name" required>
+				
+				<label for="credit"><b>Credit</b></label>
+				<input type="text" placeholder="Credits:" name="credit" required>
+
+				<button type="submit" id="insert_button" name="insert_form" class="btn create">Create</button>
+				<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+			</form>
+			<script>
+				function openForm() {
+					document.getElementById("myForm").style.display = "block";
+				}
+				
+				function closeForm() {
+					document.getElementById("myForm").style.display = "none";
+				}
+			</script>
+		</div>
+
+		<!--Delete-->
+		<button class="delete-button" onclick="openForm2()">Delete A Class</button>
+
+		<div class="form-popup" id="myForm2" name="deleteForm">
+			<form action="/planner" method="POST" class="form-container">
+				<h1>Delete Class</h1>
+
+				<label for="department"><b>Department</b></label>
+				<input type="text" placeholder="Department:" name="department" required>
+
+				<label for="number"><b>Course Number</b></label>
+				<input type="text" placeholder="Course Number:" name="number" required>
+
+				<button type="submit" name="delete_form" class="btn create">Delete</button>
+				<button type="button" class="btn cancel" onclick="closeForm2()">Close</button>
+			</form>
+			<script>
+				function openForm2() {
+					document.getElementById("myForm2").style.display = "block";
+				}
+				
+				function closeForm2() {
+					document.getElementById("myForm2").style.display = "none";
+				}
+			</script>
+		</div>
+
+		<!--Update-->
+		<button class="update-button" onclick="openForm3()">Update New Class</button>
+
+		<div class="form-popup" id="myForm3" name="updateForm">
+			<form action="/planner" method="POST" class="form-container">
+				<h1>Update Class</h1>
+
+				<label for="department"><b>Department</b></label>
+				<input type="text" placeholder="Department:" name="department" required>
+
+				<label for="number"><b>Course Number</b></label>
+				<input type="text" placeholder="Course Number:" name="number" required>
+
+				<label for="label"><b>Label</b></label> <!-- Discussion, Lecture, Lab, etc. -->
+				<input type="text" placeholder="Label" name="label" required>
+
+				<label for="val"><b>Updated Val</b></label>
+				<input type="text" placeholder="Updated Val:" name="val">
+
+				<button type="submit" name="update_form" class="btn create">Update</button>
+				<button type="button" class="btn cancel" onclick="closeForm3()">Close</button>
+			</form>
+			<script>
+				function openForm3() {
+					document.getElementById("myForm3").style.display = "block";
+				}
+				
+				function closeForm3() {
+					document.getElementById("myForm3").style.display = "none";
+				}
+			</script>
+		</div>
+	</div>
+
+	<div class="app">
+		<header>
+			<h1>Create Your Schedule!</h1>
+		</header>
+		<div style="display:block; width:100%; text-align:center;">
+			<form action="/planner" method="POST" onsubmit="getCoursesSearch()">
+				<div style="width: 100%">
+					<label for="searchType"><b>Search Type</b></label>
+					<select name="resultType">
+						<option value="AND">AND Search</option>
+						<option value="OR">OR Search</option>
+					</select>
+				</div>
+
+				<div style="width: 100%">
+					<label for="department"><b>Department</b></label>
+					<input type="text" placeholder="Department:" name="department">
+				</div>
+
+				<div style="width: 100%">
+					<label for="number"><b>Course Number</b></label>
+					<input type="text" placeholder="Course Number:" name="number">
+				</div>
+
+				<div style="width: 100%">
+					<label for="name"><b>Name</b></label>
+					<input type="text" placeholder="Name of Course:" name="name">
+				</div>
+
+				<div style="width: 100%">
+					<label for="credit"><b>Credit</b></label>
+					<input type="text" placeholder="Credits:" name="credit">
+				</div>
+				<input type="hidden" name="courses_schedule_search" id="courses_schedule_search">
+				<input type="hidden" name="credit_courses_search" id="credit_courses_search">
+				<button type="submit" name="search_form" onclick="getCoursesSearch()">Search</button>
+			</form>
+			<form action="/planner" method="POST" id="save_form" onsubmit="getCoursesSave()">
+				<input type="hidden" name="courses_schedule_save" id="courses_schedule_save">
+				<input type="hidden" name="credit_courses_save" id="credit_courses_save">
+				<button type="submit" name="save" onclick="getCoursesSave()">Save Schedule</button>
+			</form>
+		</div>
+		<div id="courses-container" class="lists" style="overflow-y:scroll">
+			<div id="courses-list" class="list" name="courses-list" style="display:inline-block; flex-flow:row; max-width:100%;">
+				<h6 style="display:block; width:100%; text-align:center;">EMPTY SEARCH WILL SHOW ALL COURSES</h6>
+			    {% for c in courses %}
+				    <div class="list-item" draggable="true" style="display:inline-block">{{c.department}} {{c.number}}</div>
+				{%endfor%}
+			</div>
+		</div>
+		<div style="display: inline; width: 100%; text-align: center;">
+			<p style="display: inline; margin-right: 400px">Courses In Chosen Track</p>
+			<p onmouseover="this.style.color='red'" onmouseout="this.style.color='#f77f00'" style="display: inline; margin-left: 400px" title="Credit obtained from proficiency exams or taken outside UIUC">Drag Courses With Credit Here</p>
+		</div>
+		<div id="courses-tracks-container" name="courses-tracks-container" class="lists" style="overflow-y:scroll">
+			<div id="courses-tracks-list" class="list" name="courses-tracks-list" style="display:inline-block; flex-flow:column; max-width:100%;">
+				{% for c in track_courses %}
+					<div class="list-item" draggable="true" style="display:inline-block">{{c}}</div>
+				{%endfor%}
+			</div>
+			<div id="credit-courses" class="list" name="credit-courses" style="display:inline-block; flex-flow:column; max-width:100%;">
+				{% for c in courses_taken %}
+					<div class="list-item" name="courses-w-credit" draggable="true" style="display:inline-block">{{c}}</div>
+				{%endfor%}
+			</div>
+		</div>
+		<div class="lists">
+			<div class="list" name="1">
+				<p>Semester 1</p>
+				{% for p in courses_planned[0] %}
+					<div class="list-item" name="semester1" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="2">
+				<p>Semester 2</p>
+				{% for p in courses_planned[1] %}
+					<div class="list-item" name="semester2" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="3">
+				<p>Semester 3</p>
+				{% for p in courses_planned[2] %}
+					<div class="list-item" name="semester3" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="4">
+				<p>Semester 4</p>
+				{% for p in courses_planned[3] %}
+					<div class="list-item" name="semester4" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="5">
+				<p>Semester 5</p>
+				{% for p in courses_planned[4] %}
+					<div class="list-item" name="semester5" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="6">
+				<p>Semester 6</p>
+				{% for p in courses_planned[5] %}
+					<div class="list-item" name="semester6" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="7">
+				<p>Semester 7</p>
+				{% for p in courses_planned[6] %}
+					<div class="list-item" name="semester7" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+            <div class="list" name="8">
+				<p>Semester 8</p>
+				{% for p in courses_planned[7] %}
+					<div class="list-item" name="semester8" draggable="true" style="display:inline-block">{{p}}</div>
+				{%endfor%}
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var prereq_list = {{prereq|tojson}};
+		var credits_list = {{credits_array|tojson}};
+		var courses_list = {{courses_planned|tojson}};
+		var courses_taken_list = {{courses_taken|tojson}};
+		console.log(courses_list);
+		console.log(courses_taken_list);
+	</script>
+	<script type="text/javascript" src="{{ url_for('static', filename='drag.js')}}">
+	</script>
+	<script type="text/javascript">
+		function getCoursesSave() {
+			var semester_one = document.getElementsByName('semester1');
+			var semester_two = document.getElementsByName('semester2');
+			var semester_three = document.getElementsByName('semester3');
+			var semester_four = document.getElementsByName('semester4');
+			var semester_five = document.getElementsByName('semester5');
+			var semester_six = document.getElementsByName('semester6');
+			var semester_seven = document.getElementsByName('semester7');
+			var semester_eight = document.getElementsByName('semester8');
+			var credit_courses = document.getElementsByName('courses-w-credit');
+			var schedule = [[],[],[],[],[],[],[],[]];
+			var credits = [];
+			for (var c = 0; c < semester_one.length; c++)
+			{
+				console.log(semester_one[c].innerHTML);
+				schedule[0].push(semester_one[c].innerHTML);
+			}
+			for (var c = 0; c < semester_two.length; c++)
+			{
+				console.log(semester_two[c].innerHTML);
+				schedule[1].push(semester_two[c].innerHTML);
+			}
+			for (var c = 0; c < semester_three.length; c++)
+			{
+				console.log(semester_three[c].innerHTML);
+				schedule[2].push(semester_three[c].innerHTML);
+			}
+			for (var c = 0; c < semester_four.length; c++)
+			{
+				console.log(semester_four[c].innerHTML);
+				schedule[3].push(semester_four[c].innerHTML);
+			}
+			for (var c = 0; c < semester_five.length; c++)
+			{
+				console.log(semester_five[c].innerHTML);
+				schedule[4].push(semester_five[c].innerHTML);
+			}
+			for (var c = 0; c < semester_six.length; c++)
+			{
+				console.log(semester_six[c].innerHTML);
+				schedule[5].push(semester_six[c].innerHTML);
+			}
+			for (var c = 0; c < semester_seven.length; c++)
+			{
+				console.log(semester_seven[c].innerHTML);
+				schedule[6].push(semester_seven[c].innerHTML);
+			}
+			for (var c = 0; c < semester_eight.length; c++)
+			{
+				console.log(semester_eight[c].innerHTML);
+				schedule[7].push(semester_eight[c].innerHTML);
+			}
+			for (var c = 0; c < credit_courses.length; c++)
+			{
+				credits.push(credit_courses[c].innerHTML);
+			}
+
+			document.getElementById('courses_schedule_save').value = JSON.stringify(schedule);
+			document.getElementById('credit_courses_save').value = JSON.stringify(credits);
+			document.getElementById("save_form").submit();
+		}
+	</script>
+	<script type="text/javascript">
+		function getCoursesSearch() {
+			var semester_one = document.getElementsByName('semester1');
+			var semester_two = document.getElementsByName('semester2');
+			var semester_three = document.getElementsByName('semester3');
+			var semester_four = document.getElementsByName('semester4');
+			var semester_five = document.getElementsByName('semester5');
+			var semester_six = document.getElementsByName('semester6');
+			var semester_seven = document.getElementsByName('semester7');
+			var semester_eight = document.getElementsByName('semester8');
+			var credit_courses = document.getElementsByName('courses-w-credit');
+			var schedule = [[],[],[],[],[],[],[],[]];
+			var credits = [];
+			for (var c = 0; c < semester_one.length; c++)
+			{
+				console.log(semester_one[c].innerHTML);
+				schedule[0].push(semester_one[c].innerHTML);
+			}
+			for (var c = 0; c < semester_two.length; c++)
+			{
+				console.log(semester_two[c].innerHTML);
+				schedule[1].push(semester_two[c].innerHTML);
+			}
+			for (var c = 0; c < semester_three.length; c++)
+			{
+				console.log(semester_three[c].innerHTML);
+				schedule[2].push(semester_three[c].innerHTML);
+			}
+			for (var c = 0; c < semester_four.length; c++)
+			{
+				console.log(semester_four[c].innerHTML);
+				schedule[3].push(semester_four[c].innerHTML);
+			}
+			for (var c = 0; c < semester_five.length; c++)
+			{
+				console.log(semester_five[c].innerHTML);
+				schedule[4].push(semester_five[c].innerHTML);
+			}
+			for (var c = 0; c < semester_six.length; c++)
+			{
+				console.log(semester_six[c].innerHTML);
+				schedule[5].push(semester_six[c].innerHTML);
+			}
+			for (var c = 0; c < semester_seven.length; c++)
+			{
+				console.log(semester_seven[c].innerHTML);
+				schedule[6].push(semester_seven[c].innerHTML);
+			}
+			for (var c = 0; c < semester_eight.length; c++)
+			{
+				console.log(semester_eight[c].innerHTML);
+				schedule[7].push(semester_eight[c].innerHTML);
+			}
+			for (var c = 0; c < credit_courses.length; c++)
+			{
+				credits.push(credit_courses[c].innerHTML);
+			}
+
+			document.getElementById('courses_schedule_search').value = JSON.stringify(schedule);
+			document.getElementById('credit_courses_search').value = JSON.stringify(credits);
+			document.getElementById("save_form").submit();
+		}
+	</script>
+</body>
+</html>
+<!--  credit to https://github.com/TylerPottsDev/drag-n-drop -->

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css')}}"
+    >
+</head>
+
+<body style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:100vh;">
+<h1>Course Planner</h1>
+
+<form method="POST">
+	<input type="text" placeholder="NetID" name="netid" style="display:block; width:100%" required>
+  <!-- Drop Down Menu for major 
+  Can later change to obtaining information from mongodb database -->
+  <select name="major" id="Major" style="display:block; width: 100%" onChange="change(this.value);" required>
+    <option value="" disabled selected>Select Major</option>
+    <option value="compe">Computer Engineering</option>
+    <option value="ee">Electrical Engineering</option>
+  </select>
+  <!-- Drop Down Menu for interests/tracks
+  Will change to obtaining information from mongodb database -->
+  <select name="interests" id="Interests" style="display:block; width: 100%">
+    <option value="" disabled selected>Select Tracks/Interests (Optional)</option>
+  </select>
+  <select style="display:block; width: 100%">
+    <option value="" disabled selected>Incoming Credits (If Applicable)</option>
+  </select>
+  <input type="checkbox" id="chem102" name="chem102">
+  <label for="chem1023">Chem 102</label>
+  <input type="checkbox" id="chem103" name="chem103">
+  <label for="chem1023">Chem 103</label>
+  <input type="checkbox" id="math221" name="math221">
+  <label for="math221">Math 221</label>
+  <input type="checkbox" id="math231" name="math231">
+  <label for="math231">Math 231</label>
+  <input type="checkbox" id="math241" name="math241">
+  <label for="math241">Math 241</label> <br>
+  <input type="checkbox" id="math286" name="math286">
+  <label for="math241">Math 286</label>
+  <input type="checkbox" id="math415" name="math415">
+  <label for="math415">Math 415</label>
+  <input type="checkbox" id="phys211" name="phys211">
+  <label for="phys211">Phys 211</label>
+  <input type="checkbox" id="phys212" name="phys212">
+  <label for="phys212">Phys 212</label>
+  <input type="checkbox" id="rhet105" name="rhet105">
+  <label for="rhet105">Rhet 105</label>
+  <br>
+  <button type="submit" name="init_info_form" style="display:inline-block">Submit</button>
+</form>
+<br>
+
+<h3>Check Out Other Student's Schedules Here!</h3>
+<a href="{{ url_for('.schedules')}}"><button class="search-button" type="button">See Other Schedules</button></a>
+
+<script>
+    var track_list = {{tracks|tojson}};
+    console.log(track_list);
+    function change(value) {
+      interestNode = document.getElementById("Interests");
+      while (interestNode.firstChild) {
+        interestNode.removeChild(interestNode.lastChild);
+      }
+      console.log(value);
+      get_track = track_list[value];
+      if (get_track === undefined)
+      {
+        var selectTrack = document.createElement("option");
+        selectTrack.value = "no_track";
+        selectTrack.disabled = true;
+        selectTrack.innerHTML = "No Tracks Available";
+        interestNode.appendChild(selectTrack);
+        return;
+      }
+      console.log(get_track);
+      var newTrack = document.createElement("option");
+      newTrack.value = "No Track";
+      newTrack.innerHTML = "No Track";
+      console.log(newTrack);
+      interestNode.appendChild(newTrack);
+      for (var t = 0; t < get_track.length; t++)
+      {
+        var newTrack = document.createElement("option");
+        newTrack.value = get_track[t];
+        newTrack.innerHTML = get_track[t];
+        console.log(newTrack);
+        interestNode.appendChild(newTrack);
+      }
+    }
+  </script>
+
+  <!-- <script src="4yearjs.js"></script> -->
+</body>
+
+</html>
